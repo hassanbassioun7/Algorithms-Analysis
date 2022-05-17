@@ -1,0 +1,79 @@
+#include <iostream>
+using namespace std;
+
+static int minCost = INT_MAX;
+#define v 4
+
+int costPermutations(int cities[], int graph[][v]) {
+    int cost = 0;
+    cout << " " << "path: ";
+    for (int i = 0; i < v; i++) {
+        if (i == v - 1) {
+            cost += graph[cities[i] - 1][cities[0] - 1];
+        }
+        else {
+            cost += graph[cities[i] - 1][cities[i + 1] - 1];
+        }
+        cout << cities[i] << " ";
+    }
+    cout << cities[0] << endl<< "cost: " << cost ;
+    return cost;
+}
+
+int fact(int x) {
+    if ((x == 0) || (x == 1))
+        return 1;
+    else
+        return x*fact(x - 1);
+}
+
+void TravelSalesman(int cities[], int start, int graph[][v], int path[]) {
+    int TmpMinCost;
+    int noOfPermutations = fact(v - 1);
+
+    while (noOfPermutations > 0) {
+        for (int i = start; i < v - 1; i++) {
+            TmpMinCost = costPermutations(cities, graph);
+            if (minCost > TmpMinCost) {
+                minCost = TmpMinCost;
+                for (int j = 0; j < v; j++) {
+                
+                    path[j] = cities[j];
+                }
+            }
+            swap(cities[i], cities[i + 1]);
+        }
+        noOfPermutations -= (v - 1 - start);
+    }
+}
+
+int max(int a, int b) {
+    return (a > b) ? a : b; 
+}
+
+int knapSack(int W, int wt[], int val[], int n)
+{
+    // Base Case
+    if (n == 0 || W == 0)
+        return 0;
+
+    if (wt[n - 1] > W)
+        return knapSack(W, wt, val, n - 1);
+
+    else
+        return max(val[n - 1]+ knapSack(W - wt[n - 1],wt, val, n - 1),knapSack(W, wt, val, n - 1));
+}
+
+int main()
+{
+    int graph[][v] = { {0,2,8,5},{2,0,3,4},{8,3,0,7},{5,4,0,7},{5,4,7,0} };
+    int permutatuions[v] = { 1,2,3,4 };
+    int minPer[v];
+    //TravelSalesman(permutatuions, 1, graph, minPer);
+
+    int val[] = { 60, 100, 120 };
+    int wt[] = { 10, 20, 30 };
+    int W = 50;
+    int n = sizeof(val) / sizeof(val[0]);
+    cout << knapSack(W, wt, val, n);
+}
